@@ -1,0 +1,17 @@
+<html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+      {% if title %}
+      <title>{{ title }} - Microblog</title>
+      {% else %}
+      <title>Welcome to Microblog</title>
+      {% endif %}
+      <!-- {% block css %}{% endblock %} -->
+    </head>
+    <body>
+      <hr>
+        {% block content %}{% endblock %}
+
+        {% block javascript %}{% endblock %}
+    </body>
+</html>

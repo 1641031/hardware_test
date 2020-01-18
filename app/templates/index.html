@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+
+<!-- 嵌入的内容 -->
+{% block content %}
+    <!-- <h1>Hi, {{ user.username }}!</h1>
+    {% for post in posts %}
+    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+    {% endfor %} -->
+    <div class="powerOnOff" style="width: 152px;text-align: center;">
+        <img style="width: 150px;" οndragstart=”return false;” src="../static/images/power-button-off.png" alt="">
+        <p>电源关闭状态</p>
+        </div>
+    <!-- <div class="powerOff">电源关闭</div> -->
+    <p class="numberDisplay"></p>
+    <div class="left"><img src="../static/images/left-arrow.png" alt=""></div>
+    <div class="right"><img src="../static/images/right-arrow.png" alt=""></div>
+    <div class="up"><img src="../static/images/up-arrow.png" alt=""></div>
+    <div class="down"><img src="../static/images/down-arrow.png" alt=""></div>
+    {% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+<script>
+var num = 0;
+var powerKey = 0;
+var clickOnOff = 0;
+
+//电源数据传输到后台
+function powerOnData(){
+    powerKey = '1';
+    data_to_backend = {powerKey:powerKey};
+    // int=self.setInterval("leftRun()",100);
+    console.log('电源开启');
+    $.post("/powerType/", data_to_backend);
+} 
+function powerOffData(){
+    powerKey = '0';
+    data_to_backend = {powerKey:powerKey};
+    // int=self.setInterval("leftRun()",100);
+    console.log('电源关闭');
+    $.post("/powerType/", data_to_backend);
+}
+
+//电源事件设置
+$('.powerOnOff').click(function(){
+    clickOnOff+=1;
+    if(clickOnOff%2 == 1){
+        $('.powerOnOff img').attr('src','../static/images/power-button-on.png')
+        $('.powerOnOff p').text('电源开启状态')
+        powerOnData();
+    }else if(clickOnOff%2 == 0){
+        $('.powerOnOff img').attr('src','../static/images/power-button-off.png')
+        $('.powerOnOff p').text('电源关闭状态')
+        powerOffData()
+    }
+});
+
+function directionData(leftKey,rightKey,upKey,downKey){
+    $.post("/myKey/", {'leftKey':leftKey,'rightKey':rightKey,'upKey':upKey,'downKey':downKey});
+}
+
+//左边按钮事件设置
+$(".left").mousedown(function(){
+    console.log('左按下');
+    $('.left img').attr('src','../static/images/lefting-arrow.png')
+    directionData('1','0','0','0')
+});
+
+
+
+// $(".left").keydown(function(event){
+//     if(event.keyCode == 37){
+//         event.preventDefault();
+//     $('.left img').attr('src','../static/images/lefting-arrow.png')
+//     directionData('1','0','0','0')
+//     }
+// });
+$(".left").mouseup(function(){
+    console.log('左抬起');
+    $('.left img').attr('src','../static/images/left-arrow.png')
+    directionData('0','0','0','0')
+});
+
+
+//右边按钮
+$(".right").mousedown(function(){
+    console.log('右按下');
+    $('.right img').attr('src','../static/images/righting-arrow.png')
+    directionData('0','1','0','0')
+});
+
+$(".right").mouseup(function(){
+    console.log('右抬起');
+    $('.right img').attr('src','../static/images/right-arrow.png')
+    directionData('0','0','0','0')
+});
+
+
+
+//上按钮
+$(".up").mousedown(function(){
+    console.log('上按钮，按下');
+    $('.up img').attr('src','../static/images/uping-arrow.png')
+    directionData('0','0','1','0')
+});
+
+
+
+$(".up").mouseup(function(){
+    console.log('上按钮，抬起');
+    $('.up img').attr('src','../static/images/up-arrow.png')
+    directionData('0','0','0','0')
+});
+
+
+//下按钮
+$(".down").mousedown(function(){
+    console.log('下按钮，按下');
+    $('.down img').attr('src','../static/images/downing-arrow.png')
+    directionData('0','0','0','1')
+});
+
+$(".down").mouseup(function(){
+    console.log('下按钮，抬起');
+    $('.down img').attr('src','../static/images/down-arrow.png')
+    directionData('0','0','0','0')
+});
+
+
+
+document.onkeydown=function(event) {
+  if (event.keyCode == 37) {
+     event.preventDefault();
+     $('.left img').attr('src','../static/images/lefting-arrow.png')
+    directionData('1','0','0','0')
+   }else if (event.keyCode == 39) {
+     event.preventDefault();
+     $('.right img').attr('src','../static/images/righting-arrow.png')
+    directionData('0','1','0','0')
+   }else if (event.keyCode == 38) {
+     event.preventDefault();
+     $('.up img').attr('src','../static/images/uping-arrow.png')
+    directionData('0','0','1','0')
+   }else if (event.keyCode == 40) {
+     event.preventDefault();
+     $('.down img').attr('src','../static/images/downing-arrow.png')
+    directionData('0','0','0','1')
+   }
+};
+
+
+document.onkeyup=function(event) {
+  if (event.keyCode == 37) {
+     event.preventDefault();
+     $('.left img').attr('src','../static/images/left-arrow.png')
+    directionData('0','0','0','0')
+   }else if (event.keyCode == 38) {
+     event.preventDefault();
+     $('.up img').attr('src','../static/images/up-arrow.png')
+    directionData('0','0','0','0')
+   }else if (event.keyCode == 39) {
+     event.preventDefault();
+     $('.right img').attr('src','../static/images/right-arrow.png')
+    directionData('0','0','0','0')
+   }else if (event.keyCode == 40) {
+     event.preventDefault();
+     $('.down img').attr('src','../static/images/down-arrow.png')
+    directionData('0','0','0','0')
+   }
+};
+
+</script>
+{% endblock %}
+
+
